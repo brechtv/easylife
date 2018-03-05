@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+    <style type="text/css">
+    </style>
+  </head>
+  <body>
+    <div class="mdl-grid">
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-phone"></div>
+      <div class="mdl-cell mdl-cell--8-col">
+        <h4>SQL random data generator</h4>
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="allow_nulls">
+          <input type="checkbox" id="allow_nulls" class="mdl-checkbox__input">
+          <span class="mdl-checkbox__label">Throw some nulls in the numbers</span>
+        </label>
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="wrap_in_lookml">
+          <input type="checkbox" id="wrap_in_lookml" class="mdl-checkbox__input" checked>
+          <span class="mdl-checkbox__label">Generate LookML</span>
+        </label>
+        <div id="sql_options">
+          <!-- Numeric Textfield with Floating Label -->
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input id="rows" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" value="10">
+            <label class="mdl-textfield__label" for="rows">Rows</label>
+            <span class="mdl-textfield__error">Input is too big!</span>
+          </div>
+          <!-- Numeric Textfield with Floating Label -->
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input id="str_columns" class="mdl-textfield__input" type="text" pattern="[0-3]" value="1">
+            <label class="mdl-textfield__label" for="str_columns">String Columns (max 3)</label>
+            <span class="mdl-textfield__error">Input is too big!</span>
+          </div>
+          <!-- Numeric Textfield with Floating Label -->
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input id="nr_columns" class="mdl-textfield__input" type="text" pattern="[0-3]" value="1">
+            <label class="mdl-textfield__label" for="nr_columns">Number Columns (integer, max 3)</label>
+            <span class="mdl-textfield__error">Input is too big!</span>
+          </div>
+          <button class="mdl-button mdl-js-button" onclick="catchData()">Generate SQL</button>
+          <button class="btn mdl-button mdl-js-button" data-clipboard-target="#sg-generated">
+          Copy to clipboard
+          </button>
+        </div>
+        <div id="sg-generated" style="font-family: Consolas, monaco, monospace; font-size: 12px; background-color: #f0f0f0; padding: 10px 10px 10px 10px;"></div>
+      </div>
+      <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-phone"></div>
+    </div>
+    <script src="sql_lookml_generator/script.js"></script>
+  </body>
+</html>

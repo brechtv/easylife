@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Generate Nice Colors! - A Hex Color Generator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <style type="text/css">
+    a.disabled {
+    pointer-events: none;
+    cursor: default;
+    }
+    a {
+    cursor: pointer;
+    }
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="jumbotron" style="background-color: white;">
+        <h1 class="display-3">Generate Nice Colors!</h1>
+        <p class="lead">Generate some decent color palettes or gradients, ready to copy paste wherever you want to use em!</p>
+        <hr class="my-4">
+        <p>Below you'll see an example primary colors palette. Pick a different one, go on!</p>
+        <p class="lead">
+          <div class="dropdown show">
+            <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" id="color_picker" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+              Pick palette
+            </a>
+            <div class="dropdown-menu" aria-labelledby="color_picker">
+              <a class="dropdown-item color-choice" id="material_four">Material Four</a>
+              <a class="dropdown-item color-choice" id="material_primaries" style="background-color: #FFFDE7;">★ Material Primaries</a>
+              <a class="dropdown-item color-choice" id="material_primaries_light">Material Primaries (light)</a>
+              <a class="dropdown-item color-choice" id="material_primaries_lighter">Material Primaries (lighter)</a>
+              <a class="dropdown-item color-choice" id="show_me_the_numbers" style="background-color: #FFFDE7;">★ Show Me the Numbers</a>
+              <a class="dropdown-item color-choice" id="blue_gradient">Blue Gradient</a>
+              <a class="dropdown-item color-choice" id="better_blue_gradient">Better Blue Gradient</a>
+              <a class="dropdown-item color-choice" id="red_gradient">Red Gradient</a>
+              <a class="dropdown-item color-choice" id="green_gradient">Green Gradient</a>
+              <a class="dropdown-item color-choice" id="amber_gradient">Amber Gradient</a>
+              <a class="dropdown-item color-choice" id="purple_gradient">Purple Gradient</a>
+              <a class="dropdown-item color-choice" id="deep_orange_gradient">Deep Orange Gradient</a>
+              <a class="dropdown-item color-choice" id="grey_gradient">Grey Gradient</a>
+              <a class="dropdown-item color-choice" id="google_charts" style="background-color: #FFFDE7;">★ Google Charts Colors</a>
+              <a class="dropdown-item color-choice" id="always_blue">Always Blue</a>
+              <a class="dropdown-item color-choice" id="random">Random</a>
+            </div>
+          </div>
+        </p>
+      </div>
+      <div class="output_colors" style="font-size: 22px;"></div>
+      <hr>
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="" aria-label="" id="output_colors_text">
+        <div class="input-group-btn">
+          <button type="button" id="copy" class="btn btn-outline-secondary" aria-haspopup="true" aria-expanded="false" data-clipboard-target="#output_colors_text">
+          Copy to clipboard
+          </button>
+          <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Action
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" id="reverse" href="#">Reverse</a>
+            <a class="dropdown-item" id="shuffle" href="#">Shuffle</a>
+            <a class="dropdown-item" id="less_gradient" href="#">Pop</a>
+            <a class="dropdown-item disabled" id="sort" href="#">Sort (or reset or whatever)</a>
+            <a class="dropdown-item" id="less" href="#">Less colors (removes first and last two)</a>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="alert alert-success" id="copy_alert" role="alert"  style="display: none;">
+        Copied to clipboard!
+      </div>
+
+      <div id='test'></div>
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
+          <script type="text/javascript" src="color_palette_generator/colors.min.js"></script>
+    <script type="text/javascript" src="color_palette_generator/script.min.js"></script>
+
+      <script type="text/javascript">
+          new Clipboard('#copy');
+
+          $(function() {
+              PickColors("material_primaries");
+          });
+
+          $(".color-choice").click(function() {
+              var selected = $(this);
+              PickColors(selected.attr('id'));
+          });
+
+          $("#reverse").click(function() {
+              reverseColors();
+          });
+
+          $("#less_gradient").click(function() {
+              evenColors();
+          });
+
+          $("#shuffle").click(function() {
+              shuffleColors();
+              $("#sort").removeClass("disabled");;
+          });
+
+          $("#sort").click(function() {
+              sortColors();
+          });
+
+          $("#less").click(function() {
+              narrowColors();
+          });
+
+          $("#copy").click(function() {
+              $("#copy_alert").show();
+
+              setTimeout(function() {
+                  $("#copy_alert").hide();
+              }, 3000);
+
+          });
+      </script>
+    </body>
+  </html>

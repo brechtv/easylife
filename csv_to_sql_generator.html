@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.8.9/jquery.csv.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+  <style type="text/css">
+    textarea {
+      width: 100%;
+      height: 400px;
+      font-family: "Lucida Console", Monaco, monospace !important;
+      font-size: 14px;
+      padding: 10px 10px 10px 10px;
+    }
+
+  </style>
+      <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+</head>
+<body>
+
+<div class="container">
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+      <h1 class="display-6">Convert CSV data to a SQL UNION Query</h1>
+      <p class="lead">Quickly generate a SQL UNION (ALL) query from a raw csv snippet</p>
+    </div>
+
+
+<div id="log"></div>
+<textarea id="csv-data">
+Year,Make,Model
+1997,Ford,E350
+2000,Mercury,Cougar
+</textarea>
+
+<div class="btn-group action-buttons" role="group">
+  <button type="button" class="btn btn-primary generate">Generate SQL</button>
+  <button type="button" class="btn btn-secondary clear">Clear input</button>
+</div>
+
+
+<div id="log"></div>
+</div>
+<script type="text/javascript">
+new ClipboardJS('.copy');
+
+$(".generate").click(function() {
+    var data_csv = $("#csv-data").val();
+
+
+  try {
+    var data_array = $.csv.toArrays(data_csv);
+    var column_headers = [];
+    var query = "";
+
+    $.each(data_array, function(i, row_values) {
+        if (i == 0) {
+            column_headers = row_values;
+        } else {
+            query += "SELECT\n";
+            $.each(row_values, function(i, cell_value) {
+                // check if value is a string, then quote it
+                if (isNaN(cell_value)) {
+                    cell_value = "'" + cell_value + "'";
+                }
+                // add to query
+                if (i < row_values.length - 1) {
+                    query += cell_value + " AS " + column_headers[i] + ", "
+                } else {
+                    query += cell_value + " AS " + column_headers[i] + "\n"
+                }
+            });
+            // unless it's the last line, add the UNION ALL
+            if (i < data_array.length - 1) {
+                query += "UNION ALL\n"
+            }
+        }
+    })
+    $(".action-buttons").append(`<button type="button" class="btn btn-primary copy" data-clipboard-action="copy" data-clipboard-target="#csv-data">Copy to Clipboard</button>`)
+    $("#csv-data").val(query);
+    $(".generate").prop("disabled",true).removeClass("btn-primary").addClass("btn-secondary");
+    $(".clear").removeClass("btn-secondary").addClass("btn-primary");
+    $(".clear").html("Start over");
+
+  } catch(err) {
+    $("#container").append(`<div class="alert alert-danger" role="alert">Unable to parse CSV. Check if the format is correct.</div>`)
+  }
+});
+
+$(".clear").click(function() {
+    $(".copy").remove();
+    $(".generate").prop("disabled",false).removeClass("btn-secondary").addClass("btn-primary");
+    $(".clear").removeClass("btn-primary").addClass("btn-secondary");
+    $(".clear").html("Clear input");
+    $("#csv-data").val("");
+})
+</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
