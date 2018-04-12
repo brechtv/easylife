@@ -34,8 +34,8 @@
 
 <div id="log"></div>
 <textarea id="csv-data">
-Year,Make,Model
-1997,Ford,E350
+Year,Make,Model Name
+1997,,E350
 2000,Mercury,Cougar
 </textarea>
 
@@ -44,7 +44,6 @@ Year,Make,Model
   <button type="button" class="btn btn-secondary clear">Clear input</button>
 </div>
 
-
 <div id="log"></div>
 </div>
 <script type="text/javascript">
@@ -52,10 +51,9 @@ new ClipboardJS('.copy');
 
 $(".generate").click(function() {
     var data_csv = $("#csv-data").val();
-
-
   try {
     var data_array = $.csv.toArrays(data_csv);
+    console.log(data_array)
     var column_headers = [];
     var query = "";
 
@@ -65,15 +63,17 @@ $(".generate").click(function() {
         } else {
             query += "SELECT\n";
             $.each(row_values, function(i, cell_value) {
-                // check if value is a string, then quote it
+                // check if value is a string, then quote it, if empty, NULL it
                 if (isNaN(cell_value)) {
                     cell_value = "'" + cell_value + "'";
+                } else if (cell_value == "" || cell_value == " ") {
+                  cell_value = "NULL"
                 }
                 // add to query
                 if (i < row_values.length - 1) {
-                    query += cell_value + " AS " + column_headers[i] + ", "
+                    query += cell_value + " AS " + column_headers[i].replace(/ /g,"_").toLowerCase() + ", "
                 } else {
-                    query += cell_value + " AS " + column_headers[i] + "\n"
+                    query += cell_value + " AS " + column_headers[i].replace(/ /g,"_").toLowerCase() + "\n"
                 }
             });
             // unless it's the last line, add the UNION ALL
@@ -89,6 +89,7 @@ $(".generate").click(function() {
     $(".clear").html("Start over");
 
   } catch(err) {
+    console.log(err)
     $("#container").append(`<div class="alert alert-danger" role="alert">Unable to parse CSV. Check if the format is correct.</div>`)
   }
 });
