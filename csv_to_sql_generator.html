@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title></title>
+  <title>CSV to SQL generator</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.8.9/jquery.csv.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
@@ -13,53 +16,44 @@
       font-size: 14px;
       padding: 10px 10px 10px 10px;
     }
-
   </style>
-      <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
 </head>
 <body>
-
 <div class="container">
+  <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-6">Convert CSV data to a SQL UNION Query</h1>
+        <p class="lead">Quickly generate a SQL UNION (ALL) query & LookML from a raw csv snippet</p>
+      </div>
 
-<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-      <h1 class="display-6">Convert CSV data to a SQL UNION Query</h1>
-      <p class="lead">Quickly generate a SQL UNION (ALL) query from a raw csv snippet</p>
-    </div>
-
-
-<div id="log"></div>
-<textarea id="csv-data">
+  <textarea id="csv-data">
 Year,Make,Model Name
 1997,,E350
 2000,Mercury,Cougar
-</textarea>
+  </textarea>
 
-<div class="btn-group action-buttons" role="group">
-  <button type="button" class="btn btn-primary generate">Generate SQL</button>
-  <button type="button" class="btn btn-secondary clear">Clear input</button>
+  <div class="btn-group action-buttons" role="group">
+    <button type="button" class="btn btn-primary generate">Generate SQL</button>
+    <button type="button" class="btn btn-secondary clear">Clear input</button>
+  </div>
 </div>
 
-<div id="log"></div>
-</div>
+
 <script type="text/javascript">
+
 new ClipboardJS('.copy');
 
 $(".generate").click(function() {
-    var data_csv = $("#csv-data").val();
-  try {
-    var data_array = $.csv.toArrays(data_csv);
-    console.log(data_array)
-    var column_headers = [];
+    var csv = $("#csv-data").val();
+    var col_headers = [];
     var query = "";
-
-    $.each(data_array, function(i, row_values) {
+  try {
+    var csv_arr = $.csv.toArrays(csv);
+    $.each(csv_arr, function(i, row_values) {
+        if (i == 1) {
+            first_row_values = row_values;
+        }
         if (i == 0) {
-            column_headers = row_values;
+            col_headers = row_values;
         } else {
             query += "SELECT\n";
             $.each(row_values, function(i, cell_value) {
@@ -71,22 +65,49 @@ $(".generate").click(function() {
                 }
                 // add to query
                 if (i < row_values.length - 1) {
-                    query += cell_value + " AS " + column_headers[i].replace(/ /g,"_").toLowerCase() + ", "
+                    query += cell_value + " AS " + col_headers[i].replace(/ /g,"_").toLowerCase() + ", "
                 } else {
-                    query += cell_value + " AS " + column_headers[i].replace(/ /g,"_").toLowerCase() + "\n"
+                    query += cell_value + " AS " + col_headers[i].replace(/ /g,"_").toLowerCase() + "\n"
                 }
             });
             // unless it's the last line, add the UNION ALL
-            if (i < data_array.length - 1) {
+            if (i < csv_arr.length - 1) {
                 query += "UNION ALL\n"
             }
         }
     })
-    $(".action-buttons").append(`<button type="button" class="btn btn-primary copy" data-clipboard-action="copy" data-clipboard-target="#csv-data">Copy to Clipboard</button>`)
+
+    $(".action-buttons").append(`<button type="button" class="btn btn-primary copy" data-clipboard-action="copy" data-clipboard-target="#csv-data">Copy to Clipboard</button>`);
+    $(".action-buttons").append(`<button type="button" class="btn btn-primary lookml">Generate LookML</button>`);
     $("#csv-data").val(query);
     $(".generate").prop("disabled",true).removeClass("btn-primary").addClass("btn-secondary");
     $(".clear").removeClass("btn-secondary").addClass("btn-primary");
     $(".clear").html("Start over");
+
+    // add option to generate the lookml stuff as well (basic)
+    $(".lookml").click(function() {
+      console.log(col_headers); console.log(first_row_values)
+
+      indented_query = "";
+      query_lines = query.split('\n');
+        for(var i = 0; i < query_lines.length; i++){
+          indented_query += `      ` + query_lines[i] + `\n`;
+        }
+
+      var lookml_body = `view: csv_to_sql_query {\n  derived_table: {\n    sql:\n` + indented_query + `  ;;\n    }\n\n`
+
+      for (var i = 0; i < col_headers.length; i++) {
+          dimension_name = col_headers[i].replace(/ /g,"_").toLowerCase()
+          dimension_type = (isNaN(first_row_values[i]) || first_row_values[i] == "" ? "string" : "number");
+          dimension = `  dimension: ` + dimension_name + ` {\n    type: ` + dimension_type + `\n    sql: \${TABLE}.` + dimension_name + ` ;;\n  }\n\n`;
+          lookml_body += dimension;
+      }
+
+      lookml_body += `  measure: count {\n    type: count\n  }\n}`;
+      $("#csv-data").val(lookml_body);
+      $(".lookml").prop("disabled",true).removeClass("btn-primary").addClass("btn-secondary");
+    });
+
 
   } catch(err) {
     console.log(err)
@@ -96,6 +117,7 @@ $(".generate").click(function() {
 
 $(".clear").click(function() {
     $(".copy").remove();
+    $(".lookml").remove();
     $(".generate").prop("disabled",false).removeClass("btn-secondary").addClass("btn-primary");
     $(".clear").removeClass("btn-primary").addClass("btn-secondary");
     $(".clear").html("Clear input");
