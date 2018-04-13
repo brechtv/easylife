@@ -122,7 +122,7 @@ $(".generate").click(function() {
 
   } catch(err) {
     console.log(err)
-    $("#container").append(`<div class="alert alert-danger" role="alert">Unable to parse CSV. Check if the format is correct.</div>`)
+    $(".lead").append(`<div class="alert alert-danger" role="alert">Unable to parse CSV. Check if the format is correct. <button class="btn btn-light" onclick="$(this).parent().remove();">Yeah fine</button></div>`)
   }
 });
 
