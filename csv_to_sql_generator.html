@@ -30,11 +30,20 @@ Year,Make,Model Name
 1997,,E350
 2000,Mercury,Cougar
   </textarea>
-
+<div class="d-flex justify-content-between">
   <div class="btn-group action-buttons" role="group">
     <button type="button" class="btn btn-primary generate">Generate SQL</button>
     <button type="button" class="btn btn-secondary clear">Clear input</button>
   </div>
+      <div>
+        <div class="form-group">
+          <label for="exampleFormControlInput1">Separator</label>
+          <input  id="csv-separator" placeholder="," value="," style="width: 40px !important">
+      </div>
+      </div>
+ </div>
+
+
 </div>
 
 
@@ -43,11 +52,12 @@ Year,Make,Model Name
 new ClipboardJS('.copy');
 
 $(".generate").click(function() {
+    var separator = $("#csv-separator").val();
     var csv = $("#csv-data").val();
     var col_headers = [];
     var query = "";
   try {
-    var csv_arr = $.csv.toArrays(csv);
+    var csv_arr = $.csv.toArrays(csv, {"separator" : separator});
     $.each(csv_arr, function(i, row_values) {
         if (i == 1) {
             first_row_values = row_values;
@@ -81,6 +91,7 @@ $(".generate").click(function() {
     $(".action-buttons").append(`<button type="button" class="btn btn-primary lookml">Generate LookML</button>`);
     $("#csv-data").val(query);
     $(".generate").prop("disabled",true).removeClass("btn-primary").addClass("btn-secondary");
+    $("#csv-separator").prop("disabled",true);
     $(".clear").removeClass("btn-secondary").addClass("btn-primary");
     $(".clear").html("Start over");
 
@@ -119,6 +130,7 @@ $(".clear").click(function() {
     $(".copy").remove();
     $(".lookml").remove();
     $(".generate").prop("disabled",false).removeClass("btn-secondary").addClass("btn-primary");
+    $("#csv-separator").prop("disabled",false);
     $(".clear").removeClass("btn-primary").addClass("btn-secondary");
     $(".clear").html("Clear input");
     $("#csv-data").val("");
