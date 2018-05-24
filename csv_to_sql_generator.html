@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.8.9/jquery.csv.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
@@ -15,6 +16,7 @@
       font-family: "Lucida Console", Monaco, monospace !important;
       font-size: 14px;
       padding: 10px 10px 10px 10px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -23,9 +25,8 @@
 <div class="pos-f-t">
   <div class="collapse" id="navbarToggleExternalContent">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <button  class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation" style="background-color: transparent; border-style: hidden;"><i class="material-icons">arrow_upward</i>
+    </button>
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
     <a class="navbar-brand" href="https://github.com/brechtv/easylife">Easy Life</a>
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
@@ -37,6 +38,9 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="https://rawgit.com/brechtv/easylife/master/color_palette_generator.html">Color Palette Generator</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://rawgit.com/brechtv/easylife/master/inspect_topojson.html">Inspect TopoJSON attributes</a>
       </li>
     </ul>
   </div>

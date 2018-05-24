@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style type="text/css">
+input[type="file"] {
+    display: none;
+}
+.custom-file-upload {
+    border: hidden;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+label {
+  cursor: pointer;
+}
+    </style>
+  </head>
+  <body>
+    <div class="pos-f-t">
+      <div class="collapse" id="navbarToggleExternalContent">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <a class="navbar-brand" href="https://github.com/brechtv/easylife">Easy Life</a>
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="https://rawgit.com/brechtv/easylife/master/csv_to_sql_generator.html">CSV to SQL/LookML</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="https://rawgit.com/brechtv/easylife/master/sql_lookml_generator.html">Dummy LookML</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="https://rawgit.com/brechtv/easylife/master/color_palette_generator.html">Color Palette Generator</a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="https://rawgit.com/brechtv/easylife/master/inspect_topojson.html">Inspect TopoJSON attributes<span class="sr-only">(current)</span></a>
+            </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <nav class="navbar navbar-light bg-light">
+        <button  class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation" style="background-color: transparent; border-style: hidden;"><i class="material-icons">arrow_upward</i>
+        </button>
+      </nav>
+    </div>
+<div class="container">
+  <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-6">Inspect TopoJSON<span> <a href="https://www.github.com/brechtv/easylife"><img src="https://github.com/favicon.ico"\></a></span></h1>
+        <p class="lead">Quickly inspect TopoJSON attributes and values</p>
+
+      </div>
+
+<form id="topojson_upload">
+  <div class="form-group custom-file-upload">
+    <label for="myfile">
+      <div class="btn" style="background-color: #007bff; color: #FFFFFF;">
+        <i class="material-icons">cloud_upload</i> Click to upload TopoJSON
+      </label>
+    </div>
+    <input type="file" class="form-control-file" id="myfile">
+  </div>
+</form>
+<br>
+
+<table class="table table-hover attributes_table">
+  <thead>
+    <tr>
+      <th scope="col">Attribute</th>
+      <th scope="col">Example value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td scope="row"><i>attribute</i></td>
+      <td style="font-style:italic;"><i>"example value"</i></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+    <script src="testjson.js"></script>
+        <script type="text/javascript">
+
+
+
+$("#myfile").on("change", function (changeEvent) {
+  for (var i = 0; i < changeEvent.target.files.length; ++i) {
+    (function (file) {               // Wrap current file in a closure.
+      var loader = new FileReader();
+      loader.onload = function (loadEvent) {
+        if (loadEvent.target.readyState != 2)
+          return;
+        if (loadEvent.target.error) {
+          alert("Error while reading file " + file.name + ": " + loadEvent.target.error);
+          return;
+        }
+        try {
+          topojson_file = JSON.parse(loadEvent.target.result)
+          generateTopoJSON(topojson_file)
+        } catch(err) {
+          alert("Could not read file!")
+        }
+
+      };
+      loader.readAsText(file);
+    })(changeEvent.target.files[i]);
+  }
+});
+
+function generateTopoJSON(filecontent) {
+
+    var properties = {},
+        property_keys = [],
+        property_values = [];
+
+    // extract the keys
+    $.each(filecontent.objects, function(i, v) {
+        if (v.type = "GeometryCollection") {
+            // loop through the keys
+            $.each(v.geometries, function(j, geometry) {
+                $.each(geometry.properties, function(property) {
+                    property_keys.push(property)
+                })
+            })
+        }
+
+        // only unique
+        property_keys = property_keys.filter((v, i, a) => a.indexOf(v) === i);
+        // create a json object for it
+        for (var key of property_keys) {
+            properties[key] = [];
+        }
+    })
+
+
+    // add values
+    $.each(filecontent.objects, function(i, v) {
+        if (v.type = "GeometryCollection") {
+            // loop through the keys
+            $.each(v.geometries, function(j, geometry) {
+                $.each(geometry.properties, function(property, property_value) {
+                    for(key in properties) {
+                      if(key == property) {
+                        properties[key] = property_value
+                      }
+                    }
+                })
+            })
+        }
+    })
+
+  // add buttons
+  for (key in properties) {
+        $(".attributes_table tbody").append(
+      `<tr>
+        <td scope="row">` + key + `</td>
+        <td style="font-style:italic;">"` + properties[key] + `"</td>
+      </tr>`
+    )
+  }
+
+}
+
+function clearAll() {
+    $(".ll_remove").remove()
+}
+
+    </script>
+
+  </body>
+</html>
