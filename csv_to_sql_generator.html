@@ -19,6 +19,16 @@
       cursor: pointer;
     }
   </style>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125265547-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125265547-1');
+</script>
+
 </head>
 <body>
 
@@ -168,7 +178,10 @@ $(".clear").click(function() {
     $("#csv-separator").prop("disabled",false);
     $(".clear").removeClass("btn-primary").addClass("btn-secondary");
     $(".clear").html("Clear input");
-    $("#csv-data").val("");
+    $("#csv-data").val(
+      `Year,Make,Model Name
+1997,,E350
+2000,Mercury,Cougar`);
 })
 </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
