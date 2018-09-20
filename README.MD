@@ -1,5 +1,7 @@
 # Easy Life
 
+[Use it here](http://rawgit.com/brechtv/easylife/master/index.html)
+
 Making my life easier I suppose.
 
 Using jQuery, Bootstrap, [Clipboard.js](https://clipboardjs.com/), jQuery-csv, ...
