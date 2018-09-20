@@ -5,6 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <title>Color Gradient Generator</title>
         <style type="text/css">
@@ -13,12 +14,11 @@
         background-color: #f5f5f5;
         }
         .color-badge {
-            min-width: 30px;
-            min-height: 30px;
-            float: left;
-            margin-left: 2px;
-            margin-bottom: 2px;
-
+        min-width: 30px;
+        min-height: 30px;
+        float: left;
+        margin-left: 2px;
+        margin-bottom: 2px;
         }
         .row {
         margin-bottom: 10px;
@@ -59,19 +59,31 @@
             <h3 class="display-7">Gradient Settings</h3>
             <p class="text-muted">Use full hexadecimal notation (e.g #FFFFFF, not #FFF) or standard CSS colors, e.g "red" or "cyan".</p>
             <div class="row">
-                <div class="col-sm">
+                <div class="col-3">
                     <label for="hex1">Color 1</label>
                     <input class="color-input form-control" type="text" id="hex1" value="#F84066">
                 </div>
-                <div class="col-sm">
+                <div class="col-1">
+                    <label>Switch</label>
+                    <button class="btn btn-outline" id="hex1-hex2"><i class="material-icons">
+                    swap_horiz
+                    </i></button>
+                </div>
+                <div class="col-3">
                     <label for="hex2">Color 2</label>
                     <input class="color-input form-control" type="text" id="hex2" value="#FFFFFF">
                 </div>
-                <div class="col-sm">
+                <div class="col-1">
+                    <label>Switch</label>
+                    <button class="btn btn-outline" id="hex2-hex3"><i class="material-icons">
+                    swap_horiz
+                    </i></button>
+                </div>
+                <div class="col-3">
                     <label for="hex3">Color 3</label>
                     <input class="color-input form-control" type="text" id="hex3" value="#0092E5">
                 </div>
-                <div class="col-sm">
+                <div class="col-1">
                     <label for="step">Steps</label>
                     <input class="color-input form-control" type="text" id="step" value="14">
                 </div>
@@ -99,15 +111,28 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <script type="text/javascript">
-            var output_arr = [];
-
+var output_arr = [];
 $(document).ready(function() {
     update()
 });
-
 $(".color-input").change(function() {
     update()
 });
+$("#hex1-hex2").click(function() {
+    h1 = $("#hex1").val()
+    h2 = $("#hex2").val()
+    $("#hex1").val(h2)
+    $("#hex2").val(h1)
+    update()
+})
+$("#hex2-hex3").click(function() {
+    h1 = $("#hex2").val()
+    h2 = $("#hex3").val()
+    $("#hex2").val(h2)
+    $("#hex3").val(h1)
+    update()
+})
+
 
 function update() {
     hex1 = $("#hex1").val()
@@ -128,27 +153,25 @@ function generate(r1, g1, b1, r2, g2, b2, r3, g3, b3, steps) {
     g_sz = Math.floor(Math.abs((g1 - g2) / steps))
     b_sz = Math.floor(Math.abs((b1 - b2) / steps))
     createDiv(r1, g1, b1)
-    for(i = 0; i < steps; i++) {
+    for (i = 0; i < steps; i++) {
         (r1 < r2 ? r1 += r_sz : r1 -= r_sz);
         (g1 < g2 ? g1 += g_sz : g1 -= g_sz);
         (b1 < b2 ? b1 += b_sz : b1 -= b_sz);
-         createDiv(r1, g1, b1)
+        createDiv(r1, g1, b1)
     }
     r_sz = Math.floor(Math.abs((r3 - r2) / steps))
     g_sz = Math.floor(Math.abs((g3 - g2) / steps))
     b_sz = Math.floor(Math.abs((b3 - b2) / steps))
-    for(i = 0; i < steps; i++) {
+    for (i = 0; i < steps; i++) {
         // console.log(r2, r3);
         (r2 < r3 ? r2 += r_sz : r2 -= r_sz);
         (g2 < g3 ? g2 += g_sz : g2 -= g_sz);
         (b2 < b3 ? b2 += b_sz : b2 -= b_sz);
-         createDiv(r2, g2, b2)
+        createDiv(r2, g2, b2)
     }
     var output = output_arr.join(", ")
     $("#output").val(output)
 }
-
-
 
 function createDiv(r, g, b) {
     hex = rgbToHex(r, g, b).toUpperCase()
@@ -156,7 +179,6 @@ function createDiv(r, g, b) {
     $(".colors").append(
         // `<span class="badge" style="color:#f5f5f5; background-color:rgb(` + r + `,` + g + `,` + b + `);">` + hex + `</span>`
         `<div onclick="$('#hex1').val('` + hex + `'); update();" class="color-badge rounded-circle" style="color:#f5f5f5; background-color:rgb(` + r + `,` + g + `,` + b + `);">` + '' + `</div>`
-
     )
 }
 
@@ -187,7 +209,6 @@ function hexToRGB(hex) {
         return hexToRGB(hex)
     }
 }
-
 var colors = {
     "aliceblue": "#f0f8ff",
     "antiquewhite": "#faebd7",
@@ -336,6 +357,5 @@ var colors = {
         <script type="text/javascript">
         new Clipboard('#copy');
         </script>
-
     </body>
 </html>
